@@ -1,0 +1,7 @@
+# source data location
+taxi_source_data: "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-04.parquet"
+
+# deltalake paths
+bronze_path: "./deltalake/taxi_trips/bronze"
+silver_path: "./deltalake/taxi_trips/silver"
+gold_path: "./deltalake/taxi_trips/gold"
