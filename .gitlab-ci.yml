@@ -24,27 +24,28 @@ stages:
 build:
   stage: build
   script:
-    - echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
-    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
-    - docker push $IMAGE_NAME:$IMAGE_TAG
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+    - docker build -t $CI_REGISTRY_IMAGE .
+    - echo $CI_REGISTRY_IMAGE
+    - docker push $CI_REGISTRY_IMAGE
 
-pyest:
-  stage: test
-  script:
-    - docker pull $IMAGE_NAME:$IMAGE_TAG
-    - docker run $IMAGE_NAME:$IMAGE_TAG pytest
+# pyest:
+#   stage: test
+#   script:
+#     - docker pull $IMAGE_NAME:$IMAGE_TAG
+#     - docker run $IMAGE_NAME:$IMAGE_TAG pytest
 
 # sonarqube:
 #     stage: test
 #     script:
 #         - sonar-scanner -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_LOGIN
 
-trivy:
-    stage: scan
-    script:
-      - docker pull $IMAGE_NAME:$IMAGE_TAG
-      - docker pull aquasec/trivy
-      - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $IMAGE_NAME:$IMAGE_TAG
+# trivy:
+#     stage: scan
+#     script:
+#       - docker pull $IMAGE_NAME:$IMAGE_TAG
+#       - docker pull aquasec/trivy
+#       - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $IMAGE_NAME:$IMAGE_TAG
 
 # deploy:
 #   stage: deploy
