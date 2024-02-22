@@ -7,6 +7,7 @@ variables:
   DOCKER_HOST: tcp://docker:2375/
   DOCKER_DRIVER: overlay2
   IMAGE_NAME: taxied
+  IMAGE_TAG: $CI_COMMIT_SHA
   AWS_DEFAULT_REGION: us-west-2
   AWS_ACCOUNT_ID: $AWS_ACCOUNT_ID
   AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
@@ -23,12 +24,15 @@ stages:
 build:
   stage: build
   script:
-    - docker build -t $IMAGE_NAME .
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker push $IMAGE_NAME:$IMAGE_TAG
 
 pyest:
   stage: test
   script:
-    - docker run $IMAGE_NAME pytest
+    - docker pull $IMAGE_NAME:$IMAGE_TAG
+    - docker run $IMAGE_NAME:$IMAGE_TAG pytest
 
 # sonarqube:
 #     stage: test
@@ -38,8 +42,9 @@ pyest:
 trivy:
     stage: scan
     script:
-        - docker pull aquasec/trivy
-        - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $IMAGE_NAME
+      - docker pull $IMAGE_NAME:$IMAGE_TAG
+      - docker pull aquasec/trivy
+      - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $IMAGE_NAME:$IMAGE_TAG
 
 # deploy:
 #   stage: deploy
