@@ -2,3 +2,5 @@ deltalake
 *.ipynb
 *.pyc
 .terraform
+*.tfstate
+*.tfstate.*
