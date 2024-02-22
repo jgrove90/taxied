@@ -1,4 +1,4 @@
-image: python:latest
+image: docker:latest
 
 services:
   - docker:dind
@@ -17,7 +17,7 @@ variables:
 stages:
   - build
   - test
-  - analyze
+  - scan
   - deploy
 
 build:
@@ -36,11 +36,10 @@ pyest:
 #         - sonar-scanner -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_LOGIN
 
 trivy:
-    stage: analyze
+    stage: scan
     script:
         - docker pull aquasec/trivy
         - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $IMAGE_NAME
-
 
 # deploy:
 #   stage: deploy
