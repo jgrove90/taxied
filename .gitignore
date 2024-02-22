@@ -1,3 +1,4 @@
 deltalake
 *.ipynb
 *.pyc
+.terraform
