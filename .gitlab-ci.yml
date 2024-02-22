@@ -7,40 +7,40 @@ variables:
   DOCKER_HOST: tcp://docker:2375/
   DOCKER_DRIVER: overlay2
   IMAGE_NAME: taxied
-  # AWS_DEFAULT_REGION: us-west-2
-  # AWS_ACCOUNT_ID: $AWS_ACCOUNT_ID
-  # AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-  # AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+  AWS_DEFAULT_REGION: us-west-2
+  AWS_ACCOUNT_ID: $AWS_ACCOUNT_ID
+  AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+  AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
   # SONAR_URL: $SONAR_URL
   # SONAR_LOGIN: $SONAR_LOGIN
 
 stages:
+  - build
   - test
   - analyze
-  - build
   - deploy
+
+build:
+  stage: build
+  script:
+    - docker build -t $IMAGE_NAME .
 
 pyest:
   stage: test
   script:
-    - pip install -r requirements.txt
-    - pytest
+    - docker run $IMAGE_NAME pytest
 
 # sonarqube:
 #     stage: test
 #     script:
 #         - sonar-scanner -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_LOGIN
 
-# trivy:
-#     stage: analyze
-#     script:
-#         - docker pull aquasec/trivy
-#         - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $IMAGE_NAME
+trivy:
+    stage: analyze
+    script:
+        - docker pull aquasec/trivy
+        - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $IMAGE_NAME
 
-# build:
-#   stage: build
-#   script:
-#     - docker build -t $IMAGE_NAME .
 
 # deploy:
 #   stage: deploy
