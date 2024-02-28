@@ -40,11 +40,11 @@ pyest:
 #         - sonar-scanner -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_LOGIN
 
 trivy:
-    stage: scan
-    script:
-      - docker pull $CI_REGISTRY_IMAGE
-      - docker pull aquasec/trivy
-      - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $CI_REGISTRY_IMAGE
+  stage: scan
+  script:
+    - docker pull $CI_REGISTRY_IMAGE
+    - docker pull aquasec/trivy
+    - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $CI_REGISTRY_IMAGE
 
 # deploy:
 #   stage: deploy
