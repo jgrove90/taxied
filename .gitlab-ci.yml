@@ -27,12 +27,16 @@ build:
     - docker build -t $CI_REGISTRY_IMAGE .
     - echo $CI_REGISTRY_IMAGE
     - docker push $CI_REGISTRY_IMAGE
+  only:
+    - production
 
 pyest:
   stage: test
   script:
     - docker pull $CI_REGISTRY_IMAGE
     - docker run $CI_REGISTRY_IMAGE pytest
+  only:
+    - production
 
 # sonarqube:
 #     stage: test
@@ -45,6 +49,8 @@ trivy:
     - docker pull $CI_REGISTRY_IMAGE
     - docker pull aquasec/trivy
     - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $CI_REGISTRY_IMAGE
+  only:
+    - production
 
 # deploy:
 #   stage: deploy
