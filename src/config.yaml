@@ -2,6 +2,6 @@
 taxi_source_data: "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-04.parquet"
 
 # deltalake paths
-bronze_path: "./deltalake/taxi_trips/bronze"
-silver_path: "./deltalake/taxi_trips/silver"
-gold_path: "./deltalake/taxi_trips/gold"
+bronze_path: "s3://deltalake-taxied-1337/bronze/"
+silver_path: "s3://deltalake-taxied-1337/silver/"
+gold_path: "s3://deltalake-taxied-1337/gold/"
