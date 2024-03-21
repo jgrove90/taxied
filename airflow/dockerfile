@@ -1,0 +1,5 @@
+# TODO: create a script that will build this automatically
+# docker build -t aws-airflow .
+FROM apache/airflow:2.8.3-python3.11
+
+RUN pip install --no-cache-dir 'apache-airflow-providers-amazon'
