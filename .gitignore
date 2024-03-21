@@ -2,6 +2,7 @@ deltalake
 *.ipynb
 *.pyc
 .terraform
+.terraform.*
 *.tfstate
 *.tfstate.*
 airflow/airflow.cfg
