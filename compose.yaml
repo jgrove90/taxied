@@ -1,0 +1,60 @@
+version: '3'
+x-airflow-common:
+  &airflow-common
+  image: apache/airflow:latest
+  environment:
+    - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://postgres:postgres@postgres:5432/airflow
+    - AIRFLOW__CORE__FERNET_KEY=FB0o_zt4e3Ziq3LdUUO7F2Z95cvFFx16hU8jTeR1ASM=
+    - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    - AIRFLOW__CORE__LOGGING_LEVEL=INFO
+  volumes:
+    - ./airflow/dags:/app/airflow/dags
+    - ./airflow/logs:/app/airflow/logs
+    - ./airflow/plugins:/app/airflow/plugins
+    - ./airflow/airflow.cfg:/app/airflow/airflow.cfg
+  depends_on:
+    - postgres
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=airflow
+      - POSTGRES_PORT=5432
+    ports:
+      - "5432:5432"
+
+  airflow-init:
+    << : *airflow-common
+    container_name: airflow_init
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - airflow db init &&
+        airflow users create
+          --role Admin
+          --username airflow
+          --password airflow
+          --email airflow@airflow.com
+          --firstname airflow
+          --lastname airflow
+    restart: on-failure
+
+  airflow-webserver:
+    << : *airflow-common
+    command: webserver
+    ports:
+      - 8080:8080
+    container_name: airflow_webserver
+    restart: always
+    depends_on:
+      - airflow-init
+    
+  airflow-scheduler:
+    << : *airflow-common
+    command: scheduler
+    container_name: airflow_scheduler
+    restart: always
