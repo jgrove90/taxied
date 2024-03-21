@@ -4,3 +4,7 @@ deltalake
 .terraform
 *.tfstate
 *.tfstate.*
+airflow/airflow.cfg
+airflow/logs
+airflow/plugins
+.env
