@@ -1,3 +1,3 @@
-# taxied
+# Architecture Diagram
 
-# about
+![Cloud Architecture](readme_images/architecture.png)
