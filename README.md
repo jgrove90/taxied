@@ -1,3 +1,3 @@
 # Architecture Diagram
 
-![Cloud Architecture](readme_images/architecture.png)
+![Cloud Architecture](images/architecture.png)
