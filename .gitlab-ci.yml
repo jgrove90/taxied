@@ -53,6 +53,7 @@ stages:
 #     - production
 
 aws-ecr:
+  stage: deploy
   script:
     - docker pull registry.gitlab.com/$CI_PROJECT_NAMESPACE/$IMAGE_NAME:latest
     - eval $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
