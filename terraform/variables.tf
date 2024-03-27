@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "ecr_repo_name" {
   description = "Name of the ECR repository"
   type        = string
-  default     = "my_repo"
+  default     = "taxied"
 }
 
 variable "private_subnet_cidrs" {
