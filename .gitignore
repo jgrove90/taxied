@@ -9,3 +9,4 @@ airflow/airflow.cfg
 airflow/logs
 airflow/plugins
 .env
+terraform
