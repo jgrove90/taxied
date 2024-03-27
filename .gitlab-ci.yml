@@ -53,12 +53,14 @@ trivy:
     - production
 
 aws-ecr:
-  image: python:3.12.1
+  image: python:slim-bullseye
   services:
     - docker:dind
   stage: deploy
-  script:
+  before_script:
+    - pip install --upgrade pip
     - pip install awscli --upgrade
+  script:
     - eval $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
     - docker tag $CI_REGISTRY_IMAGE $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_NAME:latest
     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_NAME:latest
