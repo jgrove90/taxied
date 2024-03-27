@@ -1,12 +1,7 @@
 deltalake
 *.ipynb
 *.pyc
-.terraform
-.terraform.*
-*.tfstate
-*.tfstate.*
 airflow/airflow.cfg
 airflow/logs
 airflow/plugins
 .env
-terraform
