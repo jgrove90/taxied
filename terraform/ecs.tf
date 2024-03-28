@@ -3,15 +3,16 @@ resource "aws_ecs_cluster" "data_pipeline" {
 }
 
 resource "aws_ecs_task_definition" "data_pipeline" {
-  family                   = "data-pipeline"
+  family                   = "data_pipeline_task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
   memory                   = "512"
+  execution_role_arn       = aws_iam_role.fargate_role.arn
 
   container_definitions = jsonencode([{
     name  = var.container_name
-    image = "${var.ecr_repo_name}/${var.container_name}:latest"
+    image = "<user_id>.dkr.ecr.us-west-2.amazonaws.com/${var.container_name}:latest"
     portMappings = [{
       containerPort = 80
       hostPort      = 80
