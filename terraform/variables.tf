@@ -39,3 +39,10 @@ variable "s3_bucket_name" {
   description = "Name of the S3 bucket"
   default     = "deltalake-taxied-1337"
 }
+
+variable "aws_dynamodb_table_name" {
+  type        = string
+  description = "Name of the DynamoDB table"
+  default     = "delta_log"
+
+}

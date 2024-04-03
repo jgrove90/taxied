@@ -15,19 +15,17 @@ resource "aws_iam_role" "fargate_role" {
   })
 }
 
-# resource "aws_iam_role_policy" "fargate_s3_access_policy" {
-#   name   = "fargate_s3_access_policy"
-#   role   = aws_iam_role.fargate_role.id
-#   policy = data.aws_iam_policy_document.s3_policy.json
-# }
-
-
 resource "aws_iam_role_policy_attachment" "fargate_s3_access_policy" {
-  role   = aws_iam_role.fargate_role.id
+  role       = aws_iam_role.fargate_role.id
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "fargate_execution_role_policy" {
   role       = aws_iam_role.fargate_role.id
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "fargate_dynamodb_access" {
+  role       = aws_iam_role.fargate_role.id
+  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
 }
