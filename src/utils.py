@@ -25,12 +25,15 @@ def write_delta_table(df: pl.DataFrame, table_path: str, mode: str) -> None:
         df (pl.DataFrame): The DataFrame to write.
         table_path (str): The path to the Delta table.
         mode (str): The write mode. Possible values are 'overwrite', 'append', and 'ignore'.
+        storage_options (dict): The storage options for the Delta table.
 
     Returns:
         None
     """
     print(f"Writing Delta table to {table_path} in '{mode}' mode")
-    df.write_delta(table_path, mode=mode)
+    storage_options = {'AWS_S3_LOCKING_PROVIDER': 'dynamodb', 
+                       'DELTA_DYNAMO_TABLE_NAME': 'delta_log'}
+    df.write_delta(table_path, mode=mode, storage_options=storage_options)
     return None
 
 

@@ -2,11 +2,12 @@ from airflow import DAG
 from airflow.providers.amazon.aws.operators.ecs import EcsRunTaskOperator
 from datetime import datetime, timedelta
 
-PATH = "/app/source/transformations"
+PATH = "/app/src/transformations"
 TASK_DEFINITION = "data_pipeline_task"
 CLUSTER_NAME = "data_pipeline"
 CONTAINER_NAME = "taxied"
-PRIVATE_SUBNET_ID = "subnet-04c845ddc0cf9b658"
+PRIVATE_SUBNET_ID = "subnet-01c224483fef427e8"
+SECURITY_GROUP_ID = "sg-0afcbb8b18e53ba6f"
 
 default_args = {
     'owner': 'airflow',
@@ -30,13 +31,14 @@ run_bronze_task = EcsRunTaskOperator(
     overrides={
         'containerOverrides': [{
             'name': CONTAINER_NAME,
-            'command': ['python', f'{PATH}/bronze_taxi_trips_table.py']
+            'command': ['python', f'{PATH}/bronze/bronze_taxi_trips_table.py']
         }]
     },
     network_configuration={
         'awsvpcConfiguration': {
             'subnets': [PRIVATE_SUBNET_ID],
-        }
+            'assignPublicIp': 'ENABLED',
+            'securityGroups': [SECURITY_GROUP_ID]}
     },
     aws_conn_id='aws_default',
     region_name='us-west-2',
