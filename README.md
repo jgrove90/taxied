@@ -1,3 +1,3 @@
 # Architecture Diagram
 
-![Cloud Architecture](images/architecture.png)
+![Cloud Architecture](images/architecture_diagram.png)

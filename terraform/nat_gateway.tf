@@ -1,5 +1,5 @@
 resource "aws_eip" "nat" {
-  domain   = "vpc"
+  domain = "vpc"
 }
 
 resource "aws_internet_gateway" "igw" {

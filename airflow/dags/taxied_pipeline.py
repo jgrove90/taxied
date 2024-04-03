@@ -2,9 +2,12 @@ from airflow import DAG
 from airflow.providers.amazon.aws.operators.ecs import EcsRunTaskOperator
 from datetime import datetime, timedelta
 
-PATH = "/app/source/transformations"
-TASK_DEFINITION = "data-pipeline"
-CLUSTER_NAME = "my-service"
+PATH = "/app/src/transformations"
+TASK_DEFINITION = "data_pipeline_task"
+CLUSTER_NAME = "data_pipeline"
+CONTAINER_NAME = "taxied"
+PRIVATE_SUBNET_ID = "subnet-01c224483fef427e8"
+SECURITY_GROUP_ID = "sg-0afcbb8b18e53ba6f"
 
 default_args = {
     'owner': 'airflow',
@@ -24,11 +27,18 @@ run_bronze_task = EcsRunTaskOperator(
     task_id='run_bronze_task',
     task_definition=TASK_DEFINITION,
     cluster=CLUSTER_NAME,
+    launch_type='FARGATE',
     overrides={
         'containerOverrides': [{
-            'name': 'container_name',
-            'command': ['python', f'{PATH}/bronze_taxi_trips_table.py']
+            'name': CONTAINER_NAME,
+            'command': ['python', f'{PATH}/bronze/bronze_taxi_trips_table.py']
         }]
+    },
+    network_configuration={
+        'awsvpcConfiguration': {
+            'subnets': [PRIVATE_SUBNET_ID],
+            'assignPublicIp': 'ENABLED',
+            'securityGroups': [SECURITY_GROUP_ID]}
     },
     aws_conn_id='aws_default',
     region_name='us-west-2',
@@ -40,7 +50,7 @@ run_silver_task = EcsRunTaskOperator(
     cluster=CLUSTER_NAME,
     overrides={
         'containerOverrides': [{
-            'name': 'container_name',
+            'name': CONTAINER_NAME,
             'command': ['python', f'{PATH}/silver_taxi_trips_table.py']
         }]
     },
